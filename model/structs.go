@@ -1,40 +1,34 @@
 package model
 
-type SignupRequest struct {
-	Phone_Number  string `json:"phone_number"`
-	Email_Address string `json:"email_address"`
-}
-
-type VerifyOTPRequest struct {
-	UUID  string `json:"uuid"`
-	Token string `json:"token"`
-}
-
-type UUIDResponse struct {
-	UUID string `json:"uuid"`
-}
-
-type JwtStruct struct {
-}
-
-type VerifyOTPpayload struct {
-	Type  string `json:"type"`
-	Phone string `json:"phone"`
-	Token string `json:"token"`
-}
-
-type OTPResponse struct {
-	Success bool   `json:"success"`
-	JWT     string `json:"jwt"`
-}
-
-type VerifySupabaseResponse struct {
-	AccesToken  string `json:"access_token"`
-	PhoneNumber string `json:"phone"`
+// The Struct prefix on the structure fields helps disambiguate
+type ServerConnHandlerResponse struct {
+	StructUUID string `json:"uuid"`
 }
 
 type ConnRequestBody struct {
 	StructPhone     string `json:"phone"`
 	StructEmaill    string `json:"email"`
 	StructAccStatus bool   `json:"status"`
+}
+
+type VerifyRequestBody struct {
+	StructUuid  string `json:"uuid"`
+	StructToken string `json:"token"`
+}
+
+type VerifyServerRequest struct {
+	StructType        string `json:"type"`
+	StructPhoneNumber string `json:"phone"`
+	StructToken       string `json:"token"`
+}
+
+type SupabaseAuthResponse struct {
+	AccessToken string `json:"access_token"`
+	User        struct {
+		Phone string `json:"phone"`
+	} `json:"user"`
+}
+
+type ServerJWTresponse struct {
+	StructAcessToke string `json:"acess_token"`
 }
