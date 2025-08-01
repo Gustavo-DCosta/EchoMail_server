@@ -7,7 +7,12 @@ import (
 
 	"github.com/Gustavo-DCosta/server/database"
 	"github.com/Gustavo-DCosta/server/router"
+	"github.com/subosito/gotenv"
 )
+
+func init() {
+	gotenv.Load()
+}
 
 func main() {
 	database.Connect_To_PostgreSQL()

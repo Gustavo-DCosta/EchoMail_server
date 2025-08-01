@@ -27,14 +27,27 @@ func HandleConn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if httpPayload.StructAccStatus == false {
-		err := service.LoginAccSupabase(httpPayload.StructPhone, httpPayload.StructEmaill)
+		uuid, err := service.LoginAccSupabase(httpPayload.StructPhone, httpPayload.StructEmaill)
 		if err != nil {
 			fmt.Println("Problem sending reques to supabase: | ERROR CODE: ", err)
 		}
+
+		response := model.ServerConnHandlerResponse{
+			StructUUID: uuid,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 	} else {
-		err := service.CreateAccSupabase(httpPayload.StructPhone, httpPayload.StructEmaill)
+		uuid, err := service.CreateAccSupabase(httpPayload.StructPhone, httpPayload.StructEmaill)
 		if err != nil {
 			fmt.Println("Problem sending reques to supabase: | ERROR CODE: ", err)
 		}
+
+		response := model.ServerConnHandlerResponse{
+			StructUUID: uuid,
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(response)
 	}
+
 }
