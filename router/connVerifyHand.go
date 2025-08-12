@@ -20,11 +20,7 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if httpPayload.StructUuid == "" || httpPayload.StructToken == "" {
-		http.Error(w, "Email and phone number are required", http.StatusBadRequest)
-		return
-	}
-
+	// added input protection on client side
 	phoneNumber, err := service.CrossUuidToPhone(httpPayload.StructUuid)
 	if err != nil {
 		http.Error(w, "Couldn't request redis", http.StatusConflict)
