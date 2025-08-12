@@ -21,11 +21,6 @@ func HandleConn(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if httpPayload.StructPhone == "" || httpPayload.StructEmaill == "" {
-		http.Error(w, "Email and phone number are required", http.StatusBadRequest)
-		return
-	}
-
 	if httpPayload.StructAccStatus == false {
 		uuid, err := service.LoginAccSupabase(httpPayload.StructPhone, httpPayload.StructEmaill)
 		if err != nil {
