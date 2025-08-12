@@ -20,6 +20,7 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// added input protection on client side
 	phoneNumber, err := service.CrossUuidToPhone(httpPayload.StructUuid)
 	if err != nil {
 		http.Error(w, "Couldn't request redis", http.StatusConflict)
