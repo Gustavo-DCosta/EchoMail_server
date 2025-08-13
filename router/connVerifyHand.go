@@ -2,6 +2,7 @@ package router
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/Gustavo-DCosta/server/model"
@@ -17,6 +18,7 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&httpPayload)
 	if err != nil {
 		http.Error(w, "Json file invalid", http.StatusBadRequest)
+		fmt.Println("Json file invalid")
 		return
 	}
 
@@ -24,12 +26,14 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 	phoneNumber, err := service.CrossUuidToPhone(httpPayload.StructUuid)
 	if err != nil {
 		http.Error(w, "Couldn't request redis", http.StatusConflict)
+		fmt.Println("Couldn't make a request to redis")
 		return
 	}
 
 	authResponse, err := service.SendotpSupabase(phoneNumber, httpPayload.StructToken)
 	if err != nil {
 		http.Error(w, "Coudln't request Supabase", http.StatusConflict)
+		fmt.Println("Couldn't request supabase")
 	}
 
 	value, err := service.CrossPhonetoUuid(authResponse.User.Phone)
@@ -41,6 +45,9 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 		response := model.ServerJWTresponse{
 			StructAcessToke: authResponse.AccessToken,
 		}
+		fmt.Println("token:	", authResponse.AccessToken)
+
+		fmt.Println("Struct token: ", response)
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
