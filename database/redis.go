@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/redis/go-redis/v9"
@@ -33,7 +34,7 @@ func Connect_To_Redis() {
 	})
 
 	// Quick check
-	err := Rdb.Set(Ctx, "foo", "bar", 0).Err()
+	err := Rdb.Set(Ctx, "foo", "bar", 1*time.Minute).Err()
 	if err != nil {
 		panic(err)
 	}

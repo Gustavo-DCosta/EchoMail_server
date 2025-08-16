@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 
@@ -48,6 +49,11 @@ func SendotpSupabase(phoneNumber, token string) (*model.SupabaseAuthResponse, er
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		fmt.Printf("Supabase error: HTTP %d\nResponse body: %s\n", resp.StatusCode, string(bodyBytes))
+		return nil, fmt.Errorf("supabase returned status %d", resp.StatusCode)
+	}
 	// decode the body
 	var authResponse model.SupabaseAuthResponse
 	if err := json.NewDecoder(resp.Body).Decode(&authResponse); err != nil {

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/Gustavo-DCosta/server/model"
 	"github.com/Gustavo-DCosta/server/service"
@@ -25,25 +26,36 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 	// added input protection on client side
 	phoneNumber, err := service.CrossUuidToPhone(httpPayload.StructUuid)
 	if err != nil {
-		http.Error(w, "Couldn't request redis", http.StatusConflict)
-		fmt.Println("Couldn't make a request to redis")
+		fmt.Println("Couldn't cross check UUID -> PHONE |ERROR|	", err)
+		http.Error(w, "Couldn't cross check UUID -> PHONE |ERROR|	", http.StatusConflict)
 		return
 	}
 
 	authResponse, err := service.SendotpSupabase(phoneNumber, httpPayload.StructToken)
 	if err != nil {
+		fmt.Println("Couldn't request supabase |ERROR|	", err)
 		http.Error(w, "Coudln't request Supabase", http.StatusConflict)
-		fmt.Println("Couldn't request supabase")
+		return
 	}
 
-	value, err := service.CrossPhonetoUuid(authResponse.User.Phone)
+	phoneNumberOff := authResponse.User.Phone
+	if !strings.HasPrefix(phoneNumberOff, "+") {
+		phoneNumberOff = "+" + phoneNumberOff
+	}
+
+	value, err := service.CrossPhonetoUuid(phoneNumberOff)
 	if err != nil {
-		http.Error(w, "conflict", http.StatusConflict)
+		fmt.Println("Couldn't cross check Phone -> UUID on redis |ERROR|	", err)
+		http.Error(w, "Couldn't cross check Phone -> UUID on redis", http.StatusConflict)
+		return
 	}
 
 	if value == httpPayload.StructUuid {
 		response := model.ServerJWTresponse{
-			StructAcessToke: authResponse.AccessToken,
+			StructAccessToken: authResponse.AccessToken,
+		}
+		if response.StructAccessToken == "" {
+			http.Error(w, "JWT is empty", http.StatusPreconditionRequired)
 		}
 		fmt.Println("token:	", authResponse.AccessToken)
 
