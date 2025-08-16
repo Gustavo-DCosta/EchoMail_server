@@ -30,5 +30,5 @@ type SupabaseAuthResponse struct {
 }
 
 type ServerJWTresponse struct {
-	StructAcessToke string `json:"acess_token"`
+	StructAccessToken string `json:"access_token"`
 }
