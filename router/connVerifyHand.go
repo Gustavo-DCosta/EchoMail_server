@@ -57,9 +57,7 @@ func HandleConnVerification(w http.ResponseWriter, r *http.Request) {
 		if response.StructAccessToken == "" {
 			http.Error(w, "JWT is empty", http.StatusPreconditionRequired)
 		}
-		fmt.Println("token:	", authResponse.AccessToken)
-
-		fmt.Println("Struct token: ", response)
+		// Removed printable jwt token
 
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(response)
